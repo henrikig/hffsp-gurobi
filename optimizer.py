@@ -4,7 +4,7 @@ import time
 import csv
 from problem_parser import ProblemInstance
 
-TIME_LIMIT = 50
+PROBLEM_NUMBER = 0
 
 
 def create_model(problem: ProblemInstance, big_m, time_limit=3600):
@@ -205,13 +205,19 @@ def run_model(m, problem: ProblemInstance, data_cb=data_cb):
 
 def get_problems():
     return [
-        dict(problem="instances/n20m2-01.json", big_m=1500, time_limit=3600),
-        dict(problem="instances/n20m2-02.json", big_m=1500, time_limit=3600),
-        dict(problem="instances/n20m2-03.json", big_m=1500, time_limit=3600),
+        dict(problem="instances/n20m2-01.json", big_m=1200, time_limit=145000),
+        dict(problem="instances/n20m2-02.json", big_m=1200, time_limit=145000),
+        dict(problem="instances/n20m2-03.json", big_m=1200, time_limit=145000),
+        dict(problem="instances/n20m2-04.json", big_m=1200, time_limit=145000),
+        dict(problem="instances/n20m2-05.json", big_m=1000, time_limit=145000),
     ]
 
 
 if __name__ == "__main__":
-    problem = ProblemInstance("instances/n20m2-01.json")
-    model = create_model(problem, big_m=1500, time_limit=50)
+    config = get_problems()[PROBLEM_NUMBER]
+
+    problem = ProblemInstance(config["problem"])
+    model = create_model(
+        problem, big_m=config["big_m"], time_limit=config["time_limit"]
+    )
     run_model(model, problem)
