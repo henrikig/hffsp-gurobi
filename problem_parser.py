@@ -4,6 +4,7 @@ import json
 class ProblemInstance:
     def __init__(self, problem_file) -> None:
         self.problem_file = problem_file
+        self.problem_name = self.__parse_problem_file()
 
         self.num_stages = None
         self.stages = []
@@ -48,7 +49,8 @@ class ProblemInstance:
                 i for (i, ptime) in enumerate(job_processing_times) if ptime > 0
             ]
             precedence = [
-                (precedence[i] + 1, precedence[i + 1] + 1) for i in range(len(precedence) - 1)
+                (precedence[i] + 1, precedence[i + 1] + 1)
+                for i in range(len(precedence) - 1)
             ]
             self.precedence_pairs.append(precedence)
 
@@ -65,7 +67,12 @@ class ProblemInstance:
             ]
             self.needs_processing.append(needs_processing)
 
+    def __parse_problem_file(self):
+        name = self.problem_file.split("/")[-1]
+        name = name.split(".")[0]
+        return name
+
 
 if __name__ == "__main__":
     problem = ProblemInstance("./instances/n20m2-01.json")
-    print(problem.precedence_pairs)
+    print(problem.problem_name)
