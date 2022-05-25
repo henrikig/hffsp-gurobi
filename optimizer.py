@@ -172,7 +172,7 @@ def data_cb(model, where):
             model._data.append([round(time.time() - model._start, 2), cur_obj, cur_bd])
 
 
-def run_model(m, problem: ProblemInstance, data_cb=data_cb):
+def run_model(m, problem: ProblemInstance, time_limit, data_cb=data_cb):
     m.update()
     m._obj = None
     m._bd = None
@@ -182,8 +182,12 @@ def run_model(m, problem: ProblemInstance, data_cb=data_cb):
     m.optimize(callback=data_cb)
 
     c_max = m.getVarByName("c_max")
+    gap = m.getAttr(GRB.Attr.MIPGap)
     print("CMAX:", c_max.x)
-    print("GAP:", m.getAttr(GRB.Attr.MIPGap))
+    print("GAP:", gap)
+
+    # Write final objective and gap
+    m._data.append([round(time_limit, 2), c_max.x, gap])
 
     # Write bound data to file
     with open(f"./gaps/{problem.problem_name}.csv", "w") as f:
@@ -192,7 +196,7 @@ def run_model(m, problem: ProblemInstance, data_cb=data_cb):
 
     output = []
 
-    output.append(f"GAP: {m.getAttr(GRB.Attr.MIPGap)}\n")
+    output.append(f"GAP: {gap}\n")
 
     for v in m.getVars():
         if v.Xn > 1e-6:
@@ -217,7 +221,6 @@ if __name__ == "__main__":
     config = get_problems()[PROBLEM_NUMBER]
 
     problem = ProblemInstance(config["problem"])
-    model = create_model(
-        problem, big_m=config["big_m"], time_limit=config["time_limit"]
-    )
-    run_model(model, problem)
+    time_limit = config["time_limit"]
+    model = create_model(problem, big_m=config["big_m"], time_limit=time_limit)
+    run_model(model, problem, time_limit)
