@@ -4,7 +4,7 @@ import time
 import csv
 from problem_parser import ProblemInstance
 
-PROBLEM_NUMBER = 0
+PROBLEM_NUMBER = 4
 
 
 def create_model(problem: ProblemInstance, big_m, time_limit=3600):
