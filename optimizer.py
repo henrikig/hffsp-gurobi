@@ -4,12 +4,13 @@ import time
 import csv
 from problem_parser import ProblemInstance
 
-PROBLEM_NUMBER = 4
+PROBLEM_NUMBER = 1
 
 
 def create_model(problem: ProblemInstance, big_m, time_limit=3600):
     m = gp.Model("flowshop")
     m.setParam(GRB.Param.TimeLimit, time_limit)
+    m.setParam(GRB.Param.Threads, 20)
 
     in_tuples = [(i, n) for i in problem.stages for n in problem.jobs]
 
